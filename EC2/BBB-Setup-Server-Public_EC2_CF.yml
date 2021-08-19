@@ -128,9 +128,7 @@ Resources:
           sudo apt-get install jq awscli -y
           sudo apt -V install gnupg2 pass -y
           echo "SecurityGroups group id is ${InstanceSecurityGroup1.GroupId}"
-
-          aws configure set aws_access_key_id ""
-          aws configure set aws_secret_access_key ""
+          
           aws configure set default.region ${AWS::Region}
 
       Tags:
