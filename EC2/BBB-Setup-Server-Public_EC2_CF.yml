@@ -59,7 +59,8 @@ Resources:
               - 'sts:AssumeRole'
       Path: /
       ManagedPolicyArns:
-        - !Ref S3FullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AdministratorAccess
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -120,12 +121,18 @@ Resources:
           apt update -y
           sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-          sudo apt-key fingerprint 0EBFCD88
+          sudo apt-key fingerprint 0EBFCD88 
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
           sudo apt-get update -y 
-          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose docker-compose -y
-          sudo apt-get install jq awscli -y 
+          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose -y
+          sudo apt-get install jq awscli -y
+          sudo apt -V install gnupg2 pass -y
           echo "SecurityGroups group id is ${InstanceSecurityGroup1.GroupId}"
+
+          aws configure set aws_access_key_id ""
+          aws configure set aws_secret_access_key ""
+          aws configure set default.region ${AWS::Region}
+
       Tags:
       - Key: Name
         Value: !Ref InstanceName

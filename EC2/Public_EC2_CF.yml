@@ -35,6 +35,10 @@ Parameters:
     Description: Provide AMI Image.
     Type: String
     Default: ami-04bde106886a53080
+  BBBPrivateApplicationSubnets:
+    Description: Comma separated list of the private EC2 instance subnets
+    Type: CommaDelimitedList
+    Default: "10.1.5.0/24,10.1.6.0/24,10.1.7.0/24"
   S3FullAccess:
     Type: String
     Description: 'ARN of the first IAM Managed Policy to add to the role'
@@ -60,7 +64,6 @@ Resources:
       Path: /
       ManagedPolicyArns:
         - !Ref S3FullAccess
-        - !Ref AdministratorAccess
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -120,8 +123,13 @@ Resources:
           #!/bin/bash -xe
           apt update -y
           apt-get install nginx -y
-          apt-get install docker-compose -y
-          echo "SecurityGroups group id is ${InstanceSecurityGroup1.GroupId}"
+          echo "Sleeping for 20 seconds"
+          sleep 30
+          { BBBPrivateApplicationSubnetsConv: !Join [ delimiter, [ !Ref BBBPrivateApplicationSubnets ] ] }
+          echo $BBBPrivateApplicationSubnetsConv
+          echo "Execution 1 completed" 
+          echo "{ !Join [ delimiter, [ !Ref BBBPrivateApplicationSubnets ] ] }"
+          echo "Execution 2 completed"
       Tags:
       - Key: Name
         Value: !Ref InstanceName
