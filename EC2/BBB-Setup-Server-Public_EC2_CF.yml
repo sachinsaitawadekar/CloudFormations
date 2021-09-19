@@ -34,7 +34,7 @@ Parameters:
   AmiImage:
     Description: Provide AMI Image.
     Type: String
-    Default: ami-04bde106886a53080
+    Default: ami-04bde106886a53080, ami-0747bdcabd34c712a
   S3FullAccess:
     Type: String
     Description: 'ARN of the first IAM Managed Policy to add to the role'
@@ -125,8 +125,12 @@ Resources:
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
           sudo apt-get update -y 
           sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose -y
-          sudo apt-get install jq awscli -y
+          # sudo apt-get install jq awscli -y
+          apt-get install jq python3-pip -y
+          pip3 install --upgrade awscli
           sudo apt -V install gnupg2 pass -y
+          curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+          sudo dpkg -i session-manager-plugin.deb
           echo "SecurityGroups group id is ${InstanceSecurityGroup1.GroupId}"
           
           aws configure set default.region ${AWS::Region}
