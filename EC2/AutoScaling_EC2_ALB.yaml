@@ -12,11 +12,11 @@ Parameters:
     ConstraintDescription: Must be a valid email address.
     Default: sachin@softices.com
   PublicApplicationSubnets:
-    Description: Comma separated list of the appserver's subnets
-    Type: CommaDelimitedList
+    Description: Select the list of Public Subnets
+    Type: List<AWS::EC2::Subnet::Id>
   PrivateApplicationSubnets:
-    Description: Comma separated list of the private EC2 instance subnets
-    Type: CommaDelimitedList
+    Description: Select the list of Private Subnets
+    Type: List<AWS::EC2::Subnet::Id>
   ApplicationInstanceType:
     Description: Instance type for the appserver
     Type: String
@@ -139,7 +139,6 @@ Resources:
 
   AppELBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
-    Condition: BBBScalableEnvironment
     Properties:
       GroupDescription: Scalelite Security Group
       VpcId: !Ref VPCID
