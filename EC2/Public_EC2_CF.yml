@@ -34,21 +34,17 @@ Parameters:
   AmiImage:
     Description: Provide AMI Image.
     Type: String
-    Default: ami-04bde106886a53080
-  BBBPrivateApplicationSubnets:
-    Description: Comma separated list of the private EC2 instance subnets
-    Type: CommaDelimitedList
-    Default: "10.1.5.0/24,10.1.6.0/24,10.1.7.0/24"
+    Default: ami-04bde106886a53080, ami-0747bdcabd34c712a
   S3FullAccess:
     Type: String
     Description: 'ARN of the first IAM Managed Policy to add to the role'
     Default: "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 Resources:
-  PublicIP:
-    Type: AWS::EC2::EIP
-    Properties:
-      InstanceId: !Ref EC2Instance
-      Domain: vpc  
+  #PublicIP:
+  #  Type: AWS::EC2::EIP
+  #  Properties:
+  #    InstanceId: !Ref EC2Instance
+  #    Domain: vpc  
   EC2IAMRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -63,7 +59,8 @@ Resources:
               - 'sts:AssumeRole'
       Path: /
       ManagedPolicyArns:
-        - !Ref S3FullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AdministratorAccess
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -121,15 +118,24 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
+          
           apt update -y
-          apt-get install nginx -y
-          echo "Sleeping for 20 seconds"
-          sleep 30
-          { BBBPrivateApplicationSubnetsConv: !Join [ delimiter, [ !Ref BBBPrivateApplicationSubnets ] ] }
-          echo $BBBPrivateApplicationSubnetsConv
-          echo "Execution 1 completed" 
-          echo "{ !Join [ delimiter, [ !Ref BBBPrivateApplicationSubnets ] ] }"
-          echo "Execution 2 completed"
+          
+          # sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y
+          # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          # sudo apt-key fingerprint 0EBFCD88 
+          # sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          # sudo apt-get update -y 
+          # sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose -y
+          # # sudo apt-get install jq awscli -y
+          # apt-get install jq python3-pip -y
+          # pip3 install --upgrade awscli
+          # sudo apt -V install gnupg2 pass -y
+          # curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+          # sudo dpkg -i session-manager-plugin.deb
+          
+          aws configure set default.region ${AWS::Region}
+
       Tags:
       - Key: Name
         Value: !Ref InstanceName
