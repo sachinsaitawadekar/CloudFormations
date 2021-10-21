@@ -93,7 +93,7 @@ Parameters:
     Type: String
   VPCID:
     Description: Reference for the VPC
-    Type: String
+    Type: AWS::EC2::VPC::Id
   ACMCertArn: 
     Description: Set this parameter if you want to reuse an existing ACM certificate for your deployment
     Type: String
