@@ -2,10 +2,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Public EC2 Instance.'
 Parameters:
-  # KeyName:
-  #   Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
-  #   Type: AWS::EC2::KeyPair::KeyName
-  #   ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  KeyName:
+  Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
   InstanceName:
     Description: Nane of the instance.
     Type: String
